@@ -3,15 +3,19 @@ import platform, os
 import win10toast
 
 def speed_test():
-    st = speedtest.Speedtest()
-    server_name = st.get_best_server()
+    try:
+        st = speedtest.Speedtest()
+        server_name = st.get_best_server()
 
-    ping = st.results.ping
-    download_speed = st.download() / 1024 / 1024
-    upload_speed = st.upload() / 1024 / 1024
+        ping = st.results.ping
+        download_speed = st.download() / 1024 / 1024
+        upload_speed = st.upload() / 1024 / 1024
 
-    result = f"Best server: {server_name['sponsor']} - {server_name['name']}, {server_name['country']} \nPing: {ping} \nDownload speed: {download_speed:.2f} Mbit/s \nUpload speed: {upload_speed:.2f} Mbit/s"
-    return result
+        result = f"Best server: {server_name['sponsor']} - {server_name['name']}, {server_name['country']} \nPing: {ping} \nDownload speed: {download_speed:.2f} Mbit/s \nUpload speed: {upload_speed:.2f} Mbit/s"
+        return result
+    except Exception as e:
+        return "null"
+
 
 def push(title, message):
     plt = platform.system()
@@ -33,8 +37,10 @@ def push(title, message):
 def main():
     push("SpeedTest", "Результат появится в новом уведомлении...")
     result = speed_test()
-    push("Result", result)
-
+    if result == "null":
+        push("Error", "Произошла ошибка! Проверьте подключение к сети")
+    else:
+        push("Result", result)
 
 
 if __name__ == '__main__':
